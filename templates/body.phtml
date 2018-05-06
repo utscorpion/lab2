@@ -1,0 +1,24 @@
+<?php
+include_once 'app/Movie.php';
+$movie = new Movie();
+$movies = $movie->getMovieByFilters( 30);
+foreach ($movies as $item): ?>
+      <div class="grid images_3_of_2">
+        <div class="movie_image">
+            <img src="../public/images/posters/<?=$item['poster_path']?>" class="img-responsive" alt="poster"/>
+        </div>
+    </div>
+    <div class="desc1 span_3_of_2">
+        <p class="movie_option"><strong>Название фильма: </strong><a href="#"><?=$item['title']?></a></p>
+        <p class="movie_option"><strong>Название фильма в оригинале: </strong><?=$item['original_title']?></p>
+        <p class="movie_option"><strong>Жанр: </strong><a href="#"><?=$item['genres']?></a></p>
+        <p class="movie_option"><strong>Дата релиза: </strong><?=$item['release_date']?></p>
+
+        <div class="down_btn"><a class="btn1" href="#"><span> </span>Download</a></div>
+    </div>
+    <div class="clearfix"> </div>
+    <p class="m_4"><strong>Описание: </strong><?=$item['overview']?></p>
+<?php
+    endforeach;
+?>
+
