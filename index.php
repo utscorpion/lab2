@@ -5,7 +5,7 @@
  * Date: 5/6/18
  * Time: 3:05 PM
  */
-
+ini_set('display_errors', 1);
 include_once 'app/Movie.php';
 if(!isset($argv)) {
     include_once 'templates/main.php';
