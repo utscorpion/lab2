@@ -40,14 +40,7 @@ class Data implements iData
                 file_put_contents($genreFile,$genresFromApi);
                 $genres = $genresFromApi;
             } else {
-                foreach (scandir($this->dbPath) as $item)  {
-                    if (fnmatch("*-genres.json", $item)) {
-                        $findFile = $this->dbPath . $item;
-                        $genresFromFindedFile = file_get_contents($findFile);
-                        file_put_contents($genreFile, $genresFromFindedFile);
-                        $genres = $genresFromFindedFile;
-                    }
-                }
+                $this->copyFile($this->dbPath, $genreFile, $genres, '-genres.json');
             }
         } else {
             $genres = file_get_contents($genreFile);
@@ -78,14 +71,8 @@ class Data implements iData
                 file_put_contents($movieFile, json_encode($movies));
                 $this->updatePosters($this->postersPath, $movieFile);
             } else {
-                foreach (scandir($this->dbPath) as $item)  {
-                    if (fnmatch("*-movie.json", $item)) {
-                        $findFile = $this->dbPath . $item;
-                        copy($findFile, $movieFile);
-                        $moviesFromFindedFile = file_get_contents($findFile);
-                        $movies = $moviesFromFindedFile;
-                    }
-                }
+
+                $this->copyFile($this->dbPath, $movieFile, $movies, '-movie.json');
             }
         } else {
             $movies = file_get_contents($movieFile);
@@ -131,5 +118,17 @@ class Data implements iData
         return $head['reponse_code'];
     }
 
+    protected function copyFile ($dir, $file, $returnedData, $seachParam) {
+        foreach (scandir($dir) as $item)  {
+            if (fnmatch($seachParam, $item)) {
+                $findFile = $dir . $item;
+                $dataFromFindedFile = file_get_contents($findFile);
+                file_put_contents($file, $dataFromFindedFile);
+                $returnedData = $dataFromFindedFile;
+            }
+        }
+
+        return $returnedData;
+    }
 }
 
