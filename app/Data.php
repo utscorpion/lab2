@@ -7,6 +7,7 @@ interface iData
 {
     public function getGenres ();
     public function getMovies ();
+    public function getMovies1 ();
 }
 
 class Data implements iData
@@ -36,20 +37,10 @@ class Data implements iData
         $genreFile = $this->dbPath . date('Y-m-d') . '-genres.json';
         if (!file_exists($genreFile)) {
             $genresFromApi = file_get_contents("$this->apiPath/genre/movtie/list?api_key=$this->apiKey&language=$this->language&region=$this->region", false);
-            if ($this->parseHeaders($http_response_header) == '200') {
-                file_put_contents($genreFile, $genresFromApi);
-                $genres = $genresFromApi;
-            } else {
-               foreach (glob('-genres.json') as $file)  {
-                   var_dump($file);
+            file_put_contents($genreFile, $genresFromApi);
+            $genres = $genresFromApi;
 
-                   if (fnmatch("-genres.json", $file)) {
-                       $genres = file_get_contents($this->dbPath.$file);
-                       var_dump($genres);
-                   }
-                }
-                die;
-            }
+
 
         } else {
             $genres = file_get_contents($genreFile);
