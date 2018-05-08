@@ -1,7 +1,7 @@
 <?php
 include_once 'app/Movie.php';
 $movie = new Movie();
-$movies = $movie->getMovieByFilters( 7);
+$movies = $movie->getMovieByFilters();
 foreach ($movies as $item): ?>
       <div class="grid images_3_of_2">
         <div class="movie_image">

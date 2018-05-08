@@ -35,22 +35,20 @@ class Data implements iData
         $genres = '';
         $genreFile = $this->dbPath . date('Y-m-d') . '-genres.json';
         if (!file_exists($genreFile)) {
-            $genresFromApi = file_get_contents("$this->apiPath/genre/movtie/list?api_key=$this->apiKey&language=$this->language&region=$this->region", false);
+            $genresFromApi = file_get_contents("$this->apiPath/genre/movie/list?api_key=$this->apiKey&language=$this->language&region=$this->region", false);
             if ($this->parseHeaders($http_response_header) == '200') {
-                file_put_contents($genreFile, $genresFromApi);
+                file_put_contents($genreFile,$genresFromApi);
                 $genres = $genresFromApi;
             } else {
-               foreach (glob('-genres.json') as $file)  {
-                   var_dump($file);
-
-                   if (fnmatch("-genres.json", $file)) {
-                       $genres = file_get_contents($this->dbPath.$file);
-                       var_dump($genres);
-                   }
+                foreach (scandir($this->dbPath) as $item)  {
+                    if (fnmatch("*-genres.json", $item)) {
+                        $findFile = $this->dbPath . $item;
+                        $genresFromFindedFile = file_get_contents($findFile);
+                        file_put_contents($genreFile, $genresFromFindedFile);
+                        $genres = $genresFromFindedFile;
+                    }
                 }
-                die;
             }
-
         } else {
             $genres = file_get_contents($genreFile);
         }
@@ -65,19 +63,30 @@ class Data implements iData
         $apiMoviePath = "$this->apiPath/movie/now_playing?api_key=$this->apiKey&language=$this->language&region=$this->region";
 
         if (!file_exists($movieFile)) {
-            $moviesFromApi = json_decode(file_get_contents("$apiMoviePath&page=1", false), true);
-            $movies [] = $moviesFromApi;
-            $totalPages = $movies[0]["total_pages"];
-            if ($totalPages > 1) {
-                for ($page = 2; $page <= $totalPages; $page++) {
-                    $moviesFromApi = json_decode(file_get_contents("$apiMoviePath&page=$page", false), true);
-                    $movies [] = $moviesFromApi;
+            $responceFromApi = file_get_contents("$apiMoviePath&page=1", false);
+            if ($this->parseHeaders($http_response_header) == '200') {
+                $moviesFromApi = json_decode($responceFromApi, true);
+                $movies [] = $moviesFromApi;
+                $totalPages = $movies[0]["total_pages"];
+                if ($totalPages > 1) {
+                    for ($page = 2; $page <= $totalPages; $page++) {
+                        $moviesFromApi = json_decode(file_get_contents("$apiMoviePath&page=$page", false), true);
+                        $movies [] = $moviesFromApi;
+                    }
+                }
+
+                file_put_contents($movieFile, json_encode($movies));
+                $this->updatePosters($this->postersPath, $movieFile);
+            } else {
+                foreach (scandir($this->dbPath) as $item)  {
+                    if (fnmatch("*-movie.json", $item)) {
+                        $findFile = $this->dbPath . $item;
+                        copy($findFile, $movieFile);
+                        $moviesFromFindedFile = file_get_contents($findFile);
+                        $movies = $moviesFromFindedFile;
+                    }
                 }
             }
-
-            file_put_contents($movieFile, json_encode($movies));
-            $this->updatePosters($this->postersPath, $movieFile);
-
         } else {
             $movies = file_get_contents($movieFile);
         }
@@ -118,6 +127,7 @@ class Data implements iData
                     $head['reponse_code'] = intval($out[1]);
             }
         }
+
         return $head['reponse_code'];
     }
 

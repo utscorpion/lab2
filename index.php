@@ -18,7 +18,7 @@ if(!isset($argv)) {
         if($dayInfo[0] == '-days') {
             $days = $dayInfo[1];
             $movie = new Movie();
-            $movies = $movie->getMovieByFilters($days);
+            $movies = $movie->getMovieByFilters();
             if ($movies) {
                 foreach ($movies as $data) {
                     echo "-----------------------------------------------------------------\n";
