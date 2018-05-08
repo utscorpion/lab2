@@ -1,7 +1,7 @@
 <?php
-include_once 'Data.php';
+include_once 'QueryMode.php';
 
-class Movie extends Data
+class ListMode extends QueryMode
 {
     public function getMovieByFilters ()
     {

@@ -1,9 +1,9 @@
 <?php
 
 include_once 'config.php';
-include_once 'iData.php';
+include_once 'iQuery.php';
 
-class Data implements iData
+class QueryMode implements iQuery
 {
     protected $apiPath;
     protected $apiKey;

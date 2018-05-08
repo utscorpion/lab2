@@ -1,6 +1,6 @@
 <?php
-include_once 'app/Movie.php';
-$movie = new Movie();
+include_once 'app/ListMode.php';
+$movie = new ListMode();
 $movies = $movie->getMovieByFilters();
 foreach ($movies as $item): ?>
       <div class="grid images_3_of_2">

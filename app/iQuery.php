@@ -6,7 +6,7 @@
  * Time: 2:54 PM
  */
 
-interface iData
+interface iQuery
 {
     public function getGenres ();
     public function getMovies ();

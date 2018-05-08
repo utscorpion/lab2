@@ -6,11 +6,11 @@
  * Time: 3:05 PM
  */
 ini_set('display_errors', 1);
-include_once 'app/Movie.php';
+include_once 'app/ListMode.php';
 if(!isset($argv)) {
     include_once 'templates/main.php';
 } else {
-    $movie = new Movie();
+    $movie = new ListMode();
     $movies = $movie->getMovieByFilters();
     if ($movies) {
         foreach ($movies as $data) {
