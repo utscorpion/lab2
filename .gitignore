@@ -1,6 +1,6 @@
 config.php
 .idea/*
-public/images/posters/*
+!public/images/posters/*
 
 test.php
-db/*
+!db/*
