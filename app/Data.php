@@ -1,13 +1,7 @@
 <?php
 
 include_once 'config.php';
-
-
-interface iData
-{
-    public function getGenres ();
-    public function getMovies ();
-}
+include_once 'iData.php';
 
 class Data implements iData
 {
