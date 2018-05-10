@@ -6,7 +6,7 @@ include_once 'app/Logger.php';
 if(!isset($argv)) {
     include_once 'templates/main.php';
 } else {
-    Logger::getLogger('log')->log('Осуществлен вход через терминал, началось одновление данных');
+    Logger::getLogger()->log('Осуществлен вход через терминал, началось обновление данных_______________________________');
     $query = new QueryMode();
     $genresList = $query->getGenres();
     $moviesList = $query->getMovies();

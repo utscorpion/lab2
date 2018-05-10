@@ -26,31 +26,27 @@ class QueryMode implements iQuery
 
     public function getGenres()
     {
-        Logger::getLogger('log')->log('Начало обновления файла с жанрами');
-        //$genres = '';
+        Logger::getLogger()->log('Начало обновления файла с жанрами');
         $genreFile = $this->dbPath . date('Y-m-d') . '-genres.json';
         if (!file_exists($genreFile)) {
             $genresFromApi = file_get_contents("$this->apiPath/genre/movie/list?api_key=$this->apiKey&language=$this->language&region=$this->region", false);
             file_put_contents($genreFile, $genresFromApi);
-            $genres = $genresFromApi;
             if ($this->parseHeaders($http_response_header) == '200') {
                 file_put_contents($genreFile,$genresFromApi);
-                Logger::getLogger('log')->log("Файл с жанрами успешно получен с API");
-               // $genres = $genresFromApi;
+                Logger::getLogger()->log("Файл с жанрами успешно получен с API");
             } else {
-                $this->copyFile($this->dbPath, $genreFile, $genres, '-genres.json');
-                Logger::getLogger('log')->log("Соеденение с API не установленно, используется копия предыдущего файла");
+                Logger::getLogger()->log(error_get_last());
+                $this->copyFile($this->dbPath, $genreFile, '-genres.json');
+                Logger::getLogger()->log("Соеденение с API не установленно, используется копия ранее созданного файла с жанрами");
             }
         } else {
-           // $genres = file_get_contents($genreFile);
+            Logger::getLogger()->log('Файл с жанрами актуален на текущую дату');
         }
-
-       // return $genres;
     }
 
     public function getMovies()
     {
-        Logger::getLogger('log')->log('Начало обновления файла с жанрами');
+        Logger::getLogger()->log('Начало обновления файла с жанрами');
         $movies = [];
         $movieFile = $this->dbPath . date('Y-m-d') . '-movie.json';
         $apiMoviePath = "$this->apiPath/movie/now_playing?api_key=$this->apiKey&language=$this->language&region=$this->region";
@@ -67,28 +63,27 @@ class QueryMode implements iQuery
                         $movies [] = $moviesFromApi;
                     }
                 }
-
                 file_put_contents($movieFile, json_encode($movies));
+                Logger::getLogger()->log("Файл с фильмами успешно получен с API");
                 $this->updatePosters($this->postersPath, $movieFile);
             } else {
-
-                $this->copyFile($this->dbPath, $movieFile, $movies, '-movie.json');
+                Logger::getLogger()->log(error_get_last());
+                $this->copyFile($this->dbPath, $movieFile,'-movie.json');
+                Logger::getLogger()->log("Соеденение с API не установленно, используется копия ранее созданного файла с жанрами");
             }
         } else {
-          //  $movies = file_get_contents($movieFile);
+            Logger::getLogger()->log('Файл с фильмами актуален на текущую дату');
         }
-
-        return ;
     }
 
     protected function updatePosters($dir, $file)
     {
-        $pictures = [];
         $posters = json_decode(file_get_contents($file), true);
 
         if (file_exists($dir)) {
             foreach (glob($dir) as $oldPoster) {
                 @unlink($oldPoster);
+                Logger::getLogger()->log("Папка очищена от старых постеров");
             }
         }
 
@@ -97,6 +92,7 @@ class QueryMode implements iQuery
                 @file_put_contents("$dir/" . $data['poster_path'], file_get_contents("https://image.tmdb.org/t/p/w500/" . $data['poster_path']));
             }
         }
+        Logger::getLogger()->log("Новые постеры загружены");
     }
 
     protected function parseHeaders( $headers )
@@ -118,17 +114,15 @@ class QueryMode implements iQuery
         return $head['reponse_code'];
     }
 
-    protected function copyFile ($dir, $file, $returnedData, $seachParam) {
+    protected function copyFile ($dir, $file, $seachParam) {
         foreach (scandir($dir) as $item)  {
             if (fnmatch($seachParam, $item)) {
                 $findFile = $dir . $item;
                 $dataFromFindedFile = file_get_contents($findFile);
                 file_put_contents($file, $dataFromFindedFile);
-                $returnedData = $dataFromFindedFile;
             }
         }
-
-        return $returnedData;
     }
+
 }
 

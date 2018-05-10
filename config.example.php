@@ -10,4 +10,5 @@ class Configurator
     const DAYS = 'DAYS_NUMBER';
     const POSTERS_PATH = 'public/images/posters';
     public static $LOG_PATH = 'log/';
+    public static $LOG_NAME = 'logs';
 }
