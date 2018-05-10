@@ -1,21 +1,33 @@
 <?php
-include_once 'Data.php';
+include_once 'config.php';
+include_once 'QueryMode.php';
 
-class Movie extends Data
+class ListMode
 {
+
+    protected $dbPath;
+    protected $days;
+
+    public function __construct()
+    {
+        $this->dbPath = Configurator::DB_PATH;
+        $this->days = Configurator::DAYS;
+    }
+
     public function getMovieByFilters ()
     {
         $movies = [];
         $date = date('Y-m-d');
+        $query= new QueryMode();
         $movieFile =  $this->dbPath . $date . '-movie.json';
         $genreFile =  $this->dbPath . $date . '-genres.json';
 
         if (!file_exists($genreFile)) {
-            $this->getGenres();
+            $query->getGenres();
         }
 
         if (!file_exists($movieFile)) {
-            $this->getMovies();
+            $query->getMovies();
         }
 
         $moviesFromFile = json_decode(file_get_contents($movieFile), true);
