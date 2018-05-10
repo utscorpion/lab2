@@ -1,6 +1,7 @@
 config.php
 .idea/*
-public/images/posters/
-log/
+public/images/posters/*
+log/*
 test.php
-db/
+db/*
+!db/.gitkeep
