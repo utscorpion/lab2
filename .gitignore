@@ -1,7 +1,9 @@
 config.php
 .idea/*
 public/images/posters/*
+!public/images/posters/.gitkeep
 log/*
+!log/.gitkeep
 test.php
 db/*
 !db/.gitkeep
