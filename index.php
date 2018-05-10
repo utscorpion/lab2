@@ -4,10 +4,13 @@ ini_set('display_errors', 1);
 include_once 'app/ListMode.php';
 include_once 'app/Logger.php';
 if(!isset($argv)) {
-
-    Logger::getLogger('log')->log('bla-bla');
     include_once 'templates/main.php';
 } else {
+    Logger::getLogger('log')->log('Осуществлен вход через терминал, началось одновление данных');
+    $query = new QueryMode();
+    $genresList = $query->getGenres();
+    $moviesList = $query->getMovies();
+
     $movie = new ListMode();
     $movies = $movie->getMovieByFilters();
     if ($movies) {

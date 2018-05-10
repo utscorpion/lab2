@@ -17,25 +17,14 @@ class ListMode
     public function getMovieByFilters ()
     {
         $movies = [];
-        $date = date('Y-m-d');
-        $query= new QueryMode();
-        $movieFile =  $this->dbPath . $date . '-movie.json';
-        $genreFile =  $this->dbPath . $date . '-genres.json';
-
-        if (!file_exists($genreFile)) {
-            $query->getGenres();
-        }
-
-        if (!file_exists($movieFile)) {
-            $query->getMovies();
-        }
-
+        $movieFile = $this->checkData( '-movie.json');
+        $genreFile = $this->checkData( '-genres.json');
         $moviesFromFile = json_decode(file_get_contents($movieFile), true);
         $genresFromFile = json_decode(file_get_contents($genreFile), true);
 
         foreach ($moviesFromFile as $movie) {
             foreach ($movie['results'] as $item => $value) {
-                if (strtotime($value['release_date']) >= strtotime("$date - $this->days day")) {
+                if (strtotime($value['release_date']) >= strtotime(date('Y-m-d') . "- $this->days days")) {
                     $value['genres'] = [];
                     foreach ($genresFromFile["genres"] as $genre) {
                         if (in_array($genre['id'], $value['genre_ids'])) {
@@ -49,6 +38,18 @@ class ListMode
         }
 
         return $movies;
+    }
+
+    protected function checkData($dataType) {
+        $dayBeforeDate = 0;
+
+        do {
+            $date = date('Y-m-d', strtotime("$dayBeforeDate days"));
+            $returnedFile =  $this->dbPath . $date . $dataType;
+            $dayBeforeDate--;
+        } while(!file_exists($returnedFile));
+
+        return $returnedFile;
     }
 
 }

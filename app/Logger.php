@@ -13,7 +13,7 @@ class Logger
     public function __construct($name, $file=null){
         $this->name=$name;
         $this->file=$file;
-        self::$logPath = Configurator::PATH;
+        self::$logPath = Configurator::$LOG_PATH;
         $this->open();
     }
 

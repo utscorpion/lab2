@@ -26,7 +26,8 @@ class QueryMode implements iQuery
 
     public function getGenres()
     {
-        $genres = '';
+        Logger::getLogger('log')->log('Начало обновления файла с жанрами');
+        //$genres = '';
         $genreFile = $this->dbPath . date('Y-m-d') . '-genres.json';
         if (!file_exists($genreFile)) {
             $genresFromApi = file_get_contents("$this->apiPath/genre/movie/list?api_key=$this->apiKey&language=$this->language&region=$this->region", false);
@@ -34,19 +35,22 @@ class QueryMode implements iQuery
             $genres = $genresFromApi;
             if ($this->parseHeaders($http_response_header) == '200') {
                 file_put_contents($genreFile,$genresFromApi);
-                $genres = $genresFromApi;
+                Logger::getLogger('log')->log("Файл с жанрами успешно получен с API");
+               // $genres = $genresFromApi;
             } else {
                 $this->copyFile($this->dbPath, $genreFile, $genres, '-genres.json');
+                Logger::getLogger('log')->log("Соеденение с API не установленно, используется копия предыдущего файла");
             }
         } else {
-            $genres = file_get_contents($genreFile);
+           // $genres = file_get_contents($genreFile);
         }
 
-        return $genres;
+       // return $genres;
     }
 
     public function getMovies()
     {
+        Logger::getLogger('log')->log('Начало обновления файла с жанрами');
         $movies = [];
         $movieFile = $this->dbPath . date('Y-m-d') . '-movie.json';
         $apiMoviePath = "$this->apiPath/movie/now_playing?api_key=$this->apiKey&language=$this->language&region=$this->region";
@@ -71,10 +75,10 @@ class QueryMode implements iQuery
                 $this->copyFile($this->dbPath, $movieFile, $movies, '-movie.json');
             }
         } else {
-            $movies = file_get_contents($movieFile);
+          //  $movies = file_get_contents($movieFile);
         }
 
-        return $movies;
+        return ;
     }
 
     protected function updatePosters($dir, $file)

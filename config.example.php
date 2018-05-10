@@ -8,6 +8,6 @@ class Configurator
     const LANGUAGE = 'YOUR_LANGUAGE';
     const DB_PATH = 'db/';
     const DAYS = 'DAYS_NUMBER';
-    const LOG_PATH = 'log/';
     const POSTERS_PATH = 'public/images/posters';
+    public static $LOG_PATH = 'log/';
 }
